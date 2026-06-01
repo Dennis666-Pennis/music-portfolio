@@ -32,7 +32,6 @@
     .player-time {color:#adb6ce;font-size:.97em;min-width:41px;text-align:center;}
     .player-volume-bar {width:70px;display:flex;align-items:center;gap:2px;}
     .player-volume-range {width:48px;accent-color:#737de7;background:#333351;border-radius:6px;height:4.5px;}
-    /* ========== 播放页背景优化start ========== */
     .detail-modal-bg {
       position:fixed;
       z-index:1000;
@@ -43,22 +42,57 @@
       background-size:cover;
       background-repeat:no-repeat;
       opacity:.38;
-      /* 多重滤镜：低亮度、柔和高斯模糊、低透明度 */
       filter: brightness(0.57) blur(17px);
       transition:opacity .33s cubic-bezier(.43,.92,.14,1);
       will-change:opacity;
     }
     .modal-content.fullscreen ~ .detail-modal-bg {opacity:.38;}
     .modal-content:not(.fullscreen) ~ .detail-modal-bg {opacity:0;}
-    /* ========== 播放页背景优化end ========== */
+
     .detail-modal {display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:1202;background:rgba(30,30,60,0.98);}
     .detail-modal.active {display:flex;justify-content:center;align-items:center;}
     .modal-content {background:rgba(27,30,46,0.99);max-width:410px;width:97vw;border-radius:15px;padding:23px 16px 19px 16px;box-shadow:0 1.8px 17px 0 #28294f16;position:relative;transition:box-shadow .27s cubic-bezier(.32,.8,.45,1);}
     .detail-title { font-size:1.18rem;font-weight:700;margin-bottom:11px;color:#f5f7fa;}
-    .lyric-box {max-height:29vh;overflow:auto;width:98%;background:rgba(43,46,85,0.07);border-radius:8px;margin:9px auto 10px auto;box-sizing:border-box;padding:13px 10px;font-size:1.04em;transition:background 0.2s;}
-    .lyric-line {display:block;padding:4px 3px;margin:0;color:#b8baeb;opacity:.33;transition:.13s;font-size:1.01em;border-radius:5.5px;line-height:1.63;}
-    .lyric-line.active {color:#fff;font-weight:600;background:rgba(106,107,212,0.15);opacity:1;}
+
+    /* --- 歌词适配: 避免遮挡和上下安全边距 --- */
+    .lyric-box {
+      max-height:29vh;
+      overflow:auto;
+      width:98%;
+      background:rgba(43,46,85,0.07);
+      border-radius:8px;
+      margin:18px auto 30px auto; /* 增大margin bottom，防止底部遮挡 */
+      box-sizing:border-box;
+      padding:36px 12px 36px 12px; /* 上下padding增大，保证歌词不会贴顶/贴底，并避开底部控件 */
+      font-size:1.04em;
+      transition:background 0.2s;
+      display:flex; flex-direction:column; align-items:center;
+      position:relative; z-index: 1002; /* 歌词层级置顶，保证浮于封面和背景之上 */
+      pointer-events:auto;
+    }
+    .lyric-line {
+      display:block;
+      padding:4.5px 3px;
+      margin:0 auto;
+      color:#b8baeb;
+      opacity:.33;
+      transition:.13s;
+      font-size:1.01em;
+      border-radius:5.5px;
+      line-height:1.63;
+      position:relative;
+      z-index:1003;
+      max-width:88vw;
+      word-break:break-all;
+    }
+    .lyric-line.active {
+      color:#fff;
+      font-weight:600;
+      background:rgba(106,107,212,0.15);
+      opacity:1;
+    }
     .modal-controls {width:100%;display:flex;align-items:center;justify-content:center;gap:.5em;margin-top:17px;}
+
     .modal-close{
       background:none;
       border:none;
@@ -81,9 +115,9 @@
     .home-cover img {width:100%;height:100%;object-fit:cover;}
     .home-intro {font-size:1.03em;color:#bdc6ff;line-height:1.65;margin-bottom:.5em;margin-top:.2em;}
     .home-quote {font-size:.99em;color:#a9b2ed;margin-bottom:1.2em;}
-    /* ========= 专辑图卡片 ========= */
     .album-art-wrap {
       display:flex; justify-content:center; align-items:center; margin-top:0.7em; margin-bottom:1.5em; width:100%; 
+      z-index:1001; /* 防止遮挡但不压过歌词 */
     }
     .album-art-img {
       max-width:160px;
@@ -96,7 +130,6 @@
       border:2px solid #292e4a;
       background:#222233;
       z-index:4;
-      /* 保持原始清晰色彩/亮度，无模糊/淡化/压暗 */
       filter:none; opacity:1;
       transition:box-shadow .18s;
     }
@@ -116,26 +149,35 @@
       margin-bottom:2.2vh;
       text-align:center;
     }
+    /* -------- 歌词：全屏模式适配，偏上居中，增大安全区，避开下方控件 -------- */
     .modal-content.fullscreen .lyric-box {
       max-height:55vh;
       width:98vw;
       font-size:1.15em;
       background:rgba(43,46,85,0.13);
-      margin-top:2vh;
-      margin-bottom:2.2vh;
-      padding:18px 7vw 19px 7vw;
+      margin-top:5vh;
+      margin-bottom: 8vh; /* padding底部更大, 下方预留安全区 */
+      padding:37px 7vw 54px 7vw;
       border-radius:14px;
+      /* 歌词整体向上浮出安全区并上移，使高亮行总是居中可见 */
+      display:flex; flex-direction:column;align-items:center;justify-content:center;
+      position:relative; z-index: 2003;
     }
     .modal-content.fullscreen .lyric-line {
       font-size:1.19em;line-height:1.76;padding:9px 7px;
+      max-width:92vw;
+      z-index:2004;
+      margin:0 auto;
     }
     .modal-content.fullscreen .modal-controls {
       margin-top:3.5vh;
       gap:2.5vw;
       justify-content:center;
+      z-index:2004;
     }
     .modal-content.fullscreen .album-art-img {
       max-width:220px;max-height:220px;margin-bottom:8px;
+      z-index:1001;
     }
     .goto-player-btn {
       position:fixed;top:20px;right:32px;z-index:2503;
@@ -162,7 +204,7 @@
     }
     @media (max-width:650px){
       .page, .modal-content{max-width:99vw;padding:12px 3vw 14px 3vw;}.detail-title{font-size:1.06rem;}
-      .modal-content.fullscreen .lyric-box{padding:12px 2vw 13px 2vw;}
+      .modal-content.fullscreen .lyric-box{padding:22px 2vw 40px 2vw;margin-top:2vh;margin-bottom:7vh;}
       .modal-content.fullscreen .detail-title{font-size:1.12rem;}
       .goto-player-btn {top:14px;right:7vw;padding:7px 11px;font-size:0.99em;}
       .modal-content.fullscreen .album-art-img{max-width:150px;max-height:150px;}
@@ -342,8 +384,6 @@ const gotoPlayerBtn = document.getElementById('goto-player-btn');
 const albumArtImg = document.getElementById('album-art-img');
 const detailModalBg = document.getElementById('detail-modal-bg');
 
-// ---- 功能锁定区，核心结构严禁任何更改 ----
-// --- songs与UI渲染 ---
 function getAllTags(list){const set=new Set();list.forEach(s=>s.tags?.forEach(t=>set.add(t)));return Array.from(set);}
 function idxOfSong(song){return songData.findIndex(s=>s.title===song.title);}
 function renderSongCards(list, container, filterTag){
@@ -382,7 +422,6 @@ renderFilterBar(workTags,document.getElementById('workFilterBar'),t=>{renderSong
 renderFilterBar(genreTags,document.getElementById('genreFilterBar'),t=>{renderSongCards(songData,genresList,t);});
 renderSongCards(songData,worksList);renderSongCards(songData,genresList);
 
-// -----页面无缝续播逻辑-----
 function persistPlayerCache() {
   try{
     sessionStorage.setItem('playerCache',JSON.stringify(playerCache));
@@ -396,7 +435,6 @@ function retrievePlayerCache() {
 }
 retrievePlayerCache();
 
-// 页面与导航切换
 let visiblePage = "home";
 function switchPage(pageName) {
   visiblePage = pageName;
@@ -406,7 +444,6 @@ function switchPage(pageName) {
   if(next) next.classList.add('active');
 }
 
-// -----播放器代码锁定，优化仅缓存实现无缝续播-----
 function formatTime(s){
   if(isNaN(s)||!isFinite(s))return"00:00";
   let m=Math.floor(s/60),sec=Math.floor(s%60);
@@ -428,19 +465,36 @@ function parseLyric(lrc){
   result.sort((a,b)=>a.time-b.time);
   return result;
 }
+// 歌词动态滚动: 居中高亮、全屏/弹窗自适应
 function renderLyricBox(text, anchorTime) {
   lyricBox.innerHTML="";
-  lyricEntries=parseLyric(text).map((line,idx)=>{
-    let el=document.createElement('div');
-    el.className="lyric-line";
-    el.textContent=line.text||'';
+  let lyrics = parseLyric(text);
+  lyricEntries = lyrics.map((line,idx)=>{
+    let el = document.createElement('div');
+    el.className = "lyric-line";
+    el.textContent = line.text||'';
+    // 强制让每句歌词撑开高度，防止卡死
+    el.style.minHeight = lyricBox.classList.contains("fullscreen") ? "2.4em" : "2.1em";
     lyricBox.appendChild(el);
     return {...line,dom:el};
   });
   lastActiveLine=-1;
-  syncLyric(anchorTime??(audio.currentTime||0), true);
+  syncLyric(anchorTime??(audio.currentTime||0), true, true);
 }
-function syncLyric(currentTime, forceFirst){
+function scrollLyricToCenter(idx, smooth=true) {
+  if(!lyricEntries[idx] || !lyricBox) return;
+  const container = lyricBox;
+  const lines = Array.from(container.children);
+  const target = lyricEntries[idx].dom;
+  // 求目标行居中于lyricBox视口
+  const totalHeight = container.scrollHeight;
+  const boxHeight = container.clientHeight;
+  let offsetTop = target.offsetTop + target.offsetHeight/2 - boxHeight/2;
+  // 边界处理
+  offsetTop = Math.max(0, Math.min(offsetTop, totalHeight - boxHeight));
+  container.scrollTo({top:offsetTop, behavior: smooth ? "smooth" : "auto"});
+}
+function syncLyric(currentTime, forceFirst, forceCenter) {
   if(!lyricEntries.length)return;
   let idx=0;
   for(let i=0;i<lyricEntries.length;i++){
@@ -451,12 +505,11 @@ function syncLyric(currentTime, forceFirst){
     if(lastActiveLine>=0)lyricEntries[lastActiveLine].dom.classList.remove('active');
     if(idx>=0)lyricEntries[idx].dom.classList.add('active');
     lastActiveLine=idx;
-    let box=lyricBox, act=lyricEntries[idx].dom;
-    if(box&&act){
-      let scrollTop=act.offsetTop-box.offsetHeight/2+act.offsetHeight/2;
-      box.scrollTo({top:scrollTop,behavior:'smooth'});
-    }
+    // 歌词始终视野垂直居中（无论全屏还是弹窗）
+    scrollLyricToCenter(idx,true);
   }
+  // 打开播放页时强制让歌词居中
+  if(forceCenter) scrollLyricToCenter(idx,false);
 }
 
 function updatePlayerProgressBar(){
@@ -474,7 +527,6 @@ function updateModalProgressBar(){
   modalCur.textContent=formatTime(audio.currentTime);
 }
 
-// ----------------- 主流程：保证切页/详情反复进入无缝续播 ------------------
 function playSong(idx, autoPlay, restoreState) {
   currentIdx=idx;
   const song=songData[idx];
@@ -488,9 +540,6 @@ function playSong(idx, autoPlay, restoreState) {
   renderLyricBox(song.lyric, restoreState?.time||0);
   modalDur.textContent=song.duration;
 
-  // ================== 双层画面背景效果：保持专辑封面图片原貌 ==================
-  // 最底层：模糊淡化深色背景，用cover.jpg全局铺满
-  // 居中卡片：清晰原图展示（无任何滤镜）
   if(detailModalBg){
     detailModalBg.style.backgroundImage = song.albumArt
       ? `url('${song.albumArt}')`
@@ -505,7 +554,7 @@ function playSong(idx, autoPlay, restoreState) {
     updatePlayerProgressBar();
     updateModalProgressBar();
     if(restoreState.isPlaying) audio.play(); else audio.pause();
-    setTimeout(() => { syncLyric(audio.currentTime, false); }, 40);
+    setTimeout(() => { syncLyric(audio.currentTime, false,true); }, 40);
   } else if(autoPlay) {
     audio.play();
   }
@@ -530,8 +579,11 @@ function openModal(idx){
     if(detailModalBg){
       detailModalBg.style.opacity='.38';
     }
+    // 全屏时确保歌词box安全区及居中
+    lyricBox.classList.add('fullscreen');
+    setTimeout(()=>{ scrollLyricToCenter(lastActiveLine||0,false); },20);
   },0);
-  syncLyric(audio.currentTime,false);
+  syncLyric(audio.currentTime,false,true);
   updateGotoPlayerBtn();
 }
 function closeModal(){
@@ -540,13 +592,14 @@ function closeModal(){
   modalClose.style.display='none';
   if(detailModalBg)
     detailModalBg.style.opacity='0';
+  // 关闭后清理全屏class，防止歌词padding紊乱
+  lyricBox.classList.remove('fullscreen');
   switchPage('works');
   updateGotoPlayerBtn();
 }
 modalClose.onclick=closeModal;
 modal.onclick=e=>{if(e.target===modal)closeModal();}
 document.addEventListener('keydown',e=>{
-  // 保证关闭按钮可被快捷键激活
   if(modal.classList.contains('active') && e.key==='Escape') closeModal();
 });
 modalPlay.onclick=()=>{ if(audio.paused){audio.play();}else{audio.pause();} }
@@ -581,12 +634,12 @@ audio.addEventListener('loadedmetadata',function(){
 audio.addEventListener('timeupdate',function(){
   updatePlayerProgressBar();
   updateModalProgressBar();
-  syncLyric(audio.currentTime);
+  syncLyric(audio.currentTime, false, false);
   playerCache.time = audio.currentTime;
   persistPlayerCache();
 });
 audio.addEventListener('seeked',function(){
-  syncLyric(audio.currentTime,true);
+  syncLyric(audio.currentTime,true,true);
   updatePlayerProgressBar();
   updateModalProgressBar();
   playerCache.time = audio.currentTime;
@@ -612,7 +665,7 @@ function setProgressTo(xClient){
   audio.currentTime = pct*(audio.duration||1);
   updatePlayerProgressBar();
   updateModalProgressBar();
-  syncLyric(audio.currentTime,true);
+  syncLyric(audio.currentTime,true,true);
 }
 gProgress.addEventListener('mousedown',function(e){
   isDragging=true;
@@ -650,7 +703,7 @@ function setModalProgressTo(xClient){
   audio.currentTime = pct*(audio.duration||1);
   updateModalProgressBar();
   updatePlayerProgressBar();
-  syncLyric(audio.currentTime,true);
+  syncLyric(audio.currentTime,true,true);
 }
 modalProgress.addEventListener('mousedown',function(e){
   isModalDragging=true;
@@ -708,7 +761,7 @@ document.querySelectorAll('.nav-link').forEach(btn=>{
   }
 });
 
-// --------- 初始化 --------
+
 (function(){
   switchPage("home");
   retrievePlayerCache();
