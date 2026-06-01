@@ -1,7 +1,16 @@
 <!-- Start of Selection -->
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
+<head><script>
+// 适配GitHub音频播放解锁
+window.addEventListener('click',async ()=>{
+    const audioList = document.querySelectorAll('audio');
+    for(let item of audioList){
+        await item.play();
+        item.pause();
+    }
+},{once:true})
+</script>
   <meta charset="UTF-8">
   <title>音乐作品集</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
