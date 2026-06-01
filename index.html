@@ -32,6 +32,7 @@
     .player-time {color:#adb6ce;font-size:.97em;min-width:41px;text-align:center;}
     .player-volume-bar {width:70px;display:flex;align-items:center;gap:2px;}
     .player-volume-range {width:48px;accent-color:#737de7;background:#333351;border-radius:6px;height:4.5px;}
+    /* ========== 播放页背景优化start ========== */
     .detail-modal-bg {
       position:fixed;
       z-index:1000;
@@ -48,51 +49,15 @@
     }
     .modal-content.fullscreen ~ .detail-modal-bg {opacity:.38;}
     .modal-content:not(.fullscreen) ~ .detail-modal-bg {opacity:0;}
-
+    /* ========== 播放页背景优化end ========== */
     .detail-modal {display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:1202;background:rgba(30,30,60,0.98);}
     .detail-modal.active {display:flex;justify-content:center;align-items:center;}
     .modal-content {background:rgba(27,30,46,0.99);max-width:410px;width:97vw;border-radius:15px;padding:23px 16px 19px 16px;box-shadow:0 1.8px 17px 0 #28294f16;position:relative;transition:box-shadow .27s cubic-bezier(.32,.8,.45,1);}
     .detail-title { font-size:1.18rem;font-weight:700;margin-bottom:11px;color:#f5f7fa;}
-
-    /* --- 歌词适配: 避免遮挡和上下安全边距 --- */
-    .lyric-box {
-      max-height:29vh;
-      overflow:auto;
-      width:98%;
-      background:rgba(43,46,85,0.07);
-      border-radius:8px;
-      margin:18px auto 30px auto; /* 增大margin bottom，防止底部遮挡 */
-      box-sizing:border-box;
-      padding:36px 12px 36px 12px; /* 上下padding增大，保证歌词不会贴顶/贴底，并避开底部控件 */
-      font-size:1.04em;
-      transition:background 0.2s;
-      display:flex; flex-direction:column; align-items:center;
-      position:relative; z-index: 1002; /* 歌词层级置顶，保证浮于封面和背景之上 */
-      pointer-events:auto;
-    }
-    .lyric-line {
-      display:block;
-      padding:4.5px 3px;
-      margin:0 auto;
-      color:#b8baeb;
-      opacity:.33;
-      transition:.13s;
-      font-size:1.01em;
-      border-radius:5.5px;
-      line-height:1.63;
-      position:relative;
-      z-index:1003;
-      max-width:88vw;
-      word-break:break-all;
-    }
-    .lyric-line.active {
-      color:#fff;
-      font-weight:600;
-      background:rgba(106,107,212,0.15);
-      opacity:1;
-    }
+    .lyric-box {max-height:29vh;overflow:auto;width:98%;background:rgba(43,46,85,0.07);border-radius:8px;margin:9px auto 10px auto;box-sizing:border-box;padding:13px 10px;font-size:1.04em;transition:background 0.2s;}
+    .lyric-line {display:block;padding:4px 3px;margin:0;color:#b8baeb;opacity:.33;transition:.13s;font-size:1.01em;border-radius:5.5px;line-height:1.63;}
+    .lyric-line.active {color:#fff;font-weight:600;background:rgba(106,107,212,0.15);opacity:1;}
     .modal-controls {width:100%;display:flex;align-items:center;justify-content:center;gap:.5em;margin-top:17px;}
-
     .modal-close{
       background:none;
       border:none;
@@ -115,9 +80,9 @@
     .home-cover img {width:100%;height:100%;object-fit:cover;}
     .home-intro {font-size:1.03em;color:#bdc6ff;line-height:1.65;margin-bottom:.5em;margin-top:.2em;}
     .home-quote {font-size:.99em;color:#a9b2ed;margin-bottom:1.2em;}
+    /* ========= 专辑图卡片 ========= */
     .album-art-wrap {
       display:flex; justify-content:center; align-items:center; margin-top:0.7em; margin-bottom:1.5em; width:100%; 
-      z-index:1001; /* 防止遮挡但不压过歌词 */
     }
     .album-art-img {
       max-width:160px;
@@ -130,6 +95,7 @@
       border:2px solid #292e4a;
       background:#222233;
       z-index:4;
+      /* 保持原始清晰色彩/亮度，无模糊/淡化/压暗 */
       filter:none; opacity:1;
       transition:box-shadow .18s;
     }
@@ -138,80 +104,156 @@
       border-radius:0;
       padding:4vw 2vw 3vw 2vw;
       box-shadow:none;
-      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      display:flex;flex-direction:row;align-items:center;justify-content:center;
       background:rgba(20,21,38,0.95);
       z-index:2000;
       position:relative;
     }
-    .modal-content.fullscreen .detail-title {
-      font-size:1.8rem;
-      margin-top:1.7vh;
-      margin-bottom:2.2vh;
-      text-align:center;
+
+    /* ======= 新增播放页布局侧边专辑封面+歌名歌词列 ======== */
+    .player-modal-outer-container {
+      display: flex;
+      flex-direction: row;
+      width: 100vw;
+      max-width: 1280px;
+      justify-content: center;
+      align-items: stretch;
+      gap: 0px;
     }
-    /* -------- 歌词：全屏模式适配，偏上居中，增大安全区，避开下方控件 -------- */
+    .player-modal-coverside {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      flex: 0 0 auto;
+      min-width: 250px;
+      max-width: 340px;
+      height: 70vh;
+      margin: 0 4vw 0 0;
+      padding: 0;
+      z-index: 3;
+      position:relative;
+    }
+    .rotating-album-art {
+      width: 210px;
+      height: 210px;
+      min-width: 120px;
+      min-height: 120px;
+      max-width: 240px;
+      max-height: 240px;
+      margin-top: 3vh;
+      margin-bottom: 2vh;
+      border-radius: 50%;
+      box-shadow: 0 8px 64px #34356a21, 0 0 4px #2f315b38;
+      object-fit: cover;
+      border: 5px solid #23244a;
+      background: #222233;
+      /* 酷炫圆形旋转动画 */
+      animation: rotateCircleAlbumArt 17s linear infinite;
+    }
+    @keyframes rotateCircleAlbumArt {
+      0% {transform: rotate(0deg);}
+      100% {transform: rotate(359deg);}
+    }
+    .player-modal-mainpanel {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 0;
+      min-width: 250px;
+      max-width: 540px;
+      align-items: stretch;
+      justify-content: flex-start;
+      position: relative;
+      padding-top: 2vh;
+      z-index: 4;
+    }
+    .player-modal-titlearea {
+      margin-bottom: 0.5em;
+      margin-top: 0;
+      padding-bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      z-index: 5;
+      /* 歌名上移 */
+      transform: translateY(-1.5em);
+    }
+    .player-modal-title {
+      font-size: 2.03rem;
+      line-height: 2.41rem;
+      font-weight: bold;
+      letter-spacing: .018em;
+      color: #fff;
+      margin-bottom: .25em;
+      margin-top: 0;
+      text-shadow: 0 1.3px 8px #16162444;
+    }
+    .player-modal-artist {
+      font-size: 1.12em;
+      color: #b6c9fa;
+      font-weight: 500;
+      margin-bottom: 0;
+      opacity: 0.85;
+      letter-spacing: .042em;
+    }
+    .player-modal-lyricbox-container {
+      width: 100%;
+      max-width: none;
+      min-height: 272px;
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      /* 全面保证不被底部控件遮挡 */
+      margin-bottom: 2.8em;
+      margin-top: .3em;
+      z-index: 10;
+    }
     .modal-content.fullscreen .lyric-box {
-      max-height:55vh;
-      width:98vw;
-      font-size:1.15em;
+      max-height: 48vh !important;
+      min-height: 240px;
+      width: 100%;
+      font-size: 1.17em;
       background:rgba(43,46,85,0.13);
-      margin-top:5vh;
-      margin-bottom: 8vh; /* padding底部更大, 下方预留安全区 */
-      padding:37px 7vw 54px 7vw;
+      margin-bottom: 0.7em;
+      margin-top:.7em;
+      padding:18px 7vw 19px 7vw;
       border-radius:14px;
-      /* 歌词整体向上浮出安全区并上移，使高亮行总是居中可见 */
-      display:flex; flex-direction:column;align-items:center;justify-content:center;
-      position:relative; z-index: 2003;
+      box-sizing: border-box;
+      z-index: 20;
     }
-    .modal-content.fullscreen .lyric-line {
-      font-size:1.19em;line-height:1.76;padding:9px 7px;
-      max-width:92vw;
-      z-index:2004;
-      margin:0 auto;
+    @media (max-width:1100px){
+      .player-modal-outer-container {max-width:99vw;}
+      .player-modal-coverside {min-width:120px;max-width:180px;}
+      .rotating-album-art{max-width:140px;max-height:140px;width:120px;height:120px;}
+      .player-modal-title{font-size:1.18rem;}
     }
-    .modal-content.fullscreen .modal-controls {
-      margin-top:3.5vh;
-      gap:2.5vw;
-      justify-content:center;
-      z-index:2004;
-    }
-    .modal-content.fullscreen .album-art-img {
-      max-width:220px;max-height:220px;margin-bottom:8px;
-      z-index:1001;
-    }
-    .goto-player-btn {
-      position:fixed;top:20px;right:32px;z-index:2503;
-      background:rgba(32,33,54,0.94);
-      color:#a5b5ff;
-      border:none;
-      font-size:1.09em;
-      font-weight:500;
-      border-radius:7px;
-      padding:7px 15px 6px 15px;
-      box-shadow:0 1.5px 6px #22223d36;
-      cursor:pointer;
-      opacity:.83;
-      transition:background .11s,color .18s,opacity .16s;
-      letter-spacing:.04em;
-      outline:none;
-      user-select:none;
-    }
-    .goto-player-btn:hover,
-    .goto-player-btn:focus-visible {
-      background:rgba(60,74,143,0.99);
-      color:#fff;
-      opacity:1;
+    @media (max-width:900px){
+      .player-modal-outer-container{flex-direction:column;align-items:center;}
+      .player-modal-coverside {flex-direction:row;min-width:120px;max-width:99vw;height:auto;justify-content:center;margin:0 0 2vw 0;}
+      .player-modal-mainpanel{max-width:99vw;}
+      .rotating-album-art{margin-top:1em;margin-bottom:1.2em;}
     }
     @media (max-width:650px){
       .page, .modal-content{max-width:99vw;padding:12px 3vw 14px 3vw;}.detail-title{font-size:1.06rem;}
-      .modal-content.fullscreen .lyric-box{padding:22px 2vw 40px 2vw;margin-top:2vh;margin-bottom:7vh;}
+      .modal-content.fullscreen .lyric-box{padding:12px 2vw 13px 2vw;}
       .modal-content.fullscreen .detail-title{font-size:1.12rem;}
       .goto-player-btn {top:14px;right:7vw;padding:7px 11px;font-size:0.99em;}
-      .modal-content.fullscreen .album-art-img{max-width:150px;max-height:150px;}
+      .modal-content.fullscreen .album-art-img{max-width:110px;max-height:110px;}
       .modal-close {font-size:1.33em;}
+      .player-modal-title {font-size:1.1rem;}
     }
-    @media (max-width:480px){ .modal-content.fullscreen .lyric-box{max-height:68vh;}}
-    @media (max-width:450px){ .nav-list{gap:1.2em;} .pagetitle{font-size:1.08rem;}}
+    @media (max-width:480px){
+      .modal-content.fullscreen .lyric-box{max-height:68vh;}
+      .player-modal-coverside{max-width:99vw;}
+    }
+    @media (max-width:450px){
+      .nav-list{gap:1.2em;} .pagetitle{font-size:1.08rem;}
+    }
+
+    /* 覆盖老的 .modal-content.fullscreen .album-art-img 让专辑封面在侧边隐藏*/
+    .modal-content.fullscreen .album-art-wrap {display:none;}
+    .modal-content.fullscreen .album-art-img {display:none;}
   </style>
 </head>
 <body>
@@ -264,29 +306,44 @@
 <div class="detail-modal" id="detail-modal" tabindex="-1" aria-modal="true">
   <div class="modal-content" id="modal-content">
     <button class="modal-close" id="modal-close" title="关闭播放">&times;</button>
+    <!-- 新增播放页UI布局：侧边圆形专辑封面+右侧歌名歌词列 -->
+    <div class="player-modal-outer-container" id="player-modal-outer-container">
+      <div class="player-modal-coverside">
+        <img id="rotating-album-art" class="rotating-album-art" src="cover.jpg" alt="专辑封面" style="display:none;">
+      </div>
+      <div class="player-modal-mainpanel">
+        <div class="player-modal-titlearea">
+          <div class="player-modal-title" id="player-modal-title" style="display:none;"></div>
+          <div class="player-modal-artist" id="player-modal-artist" style="display:none;"></div>
+        </div>
+        <div class="player-modal-lyricbox-container">
+          <div class="lyric-box" id="lyric-box"></div>
+        </div>
+        <div class="modal-controls">
+          <button class="player-btn" id="modal-prev" title="上一首">&#8678;</button>
+          <button class="player-btn" id="modal-play">
+            <span id="modal-play-icon">&#9654;</span>
+          </button>
+          <button class="player-btn" id="modal-next" title="下一首">&#8680;</button>
+          <div style="flex:1;min-width:80px;max-width:300px;display:flex;align-items:center;gap:7px;">
+            <span id="modal-cur">00:00</span>
+            <div class="player-progress" id="modal-progress" style="margin:0 7px;flex:1;">
+              <div class="player-progress-bar" id="modal-progress-bar"></div>
+              <div class="player-progress-dot" id="modal-progress-dot" style="left:0"></div>
+            </div>
+            <span id="modal-dur">00:00</span>
+          </div>
+          <div class="player-volume-bar" style="padding-left:.3em;">
+            <svg height="18" width="18" viewBox="0 0 20 20"><path d="M4 8v4h4l5 5V3l-5 5H4z" fill="#a9ace6"/></svg>
+            <input type="range" min="0" max="1" step="0.01" id="modal-volume" class="player-volume-range">
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 老的 album-art-wrap 保留但隐藏，兼容非全屏模式结构 -->
     <div class="album-art-wrap"><img id="album-art-img" class="album-art-img" src="cover.jpg" alt="专辑封面"></div>
     <div style="display:flex;justify-content:space-between;align-items:center;">
       <div class="detail-title" id="detail-title"></div>
-    </div>
-    <div class="lyric-box" id="lyric-box"></div>
-    <div class="modal-controls">
-      <button class="player-btn" id="modal-prev" title="上一首">&#8678;</button>
-      <button class="player-btn" id="modal-play">
-        <span id="modal-play-icon">&#9654;</span>
-      </button>
-      <button class="player-btn" id="modal-next" title="下一首">&#8680;</button>
-      <div style="flex:1;min-width:80px;max-width:300px;display:flex;align-items:center;gap:7px;">
-        <span id="modal-cur">00:00</span>
-        <div class="player-progress" id="modal-progress" style="margin:0 7px;flex:1;">
-          <div class="player-progress-bar" id="modal-progress-bar"></div>
-          <div class="player-progress-dot" id="modal-progress-dot" style="left:0"></div>
-        </div>
-        <span id="modal-dur">00:00</span>
-      </div>
-      <div class="player-volume-bar" style="padding-left:.3em;">
-        <svg height="18" width="18" viewBox="0 0 20 20"><path d="M4 8v4h4l5 5V3l-5 5H4z" fill="#a9ace6"/></svg>
-        <input type="range" min="0" max="1" step="0.01" id="modal-volume" class="player-volume-range">
-      </div>
     </div>
   </div>
   <div class="detail-modal-bg" id="detail-modal-bg"></div>
@@ -310,6 +367,7 @@
 <audio id="audio-player" preload="auto" tabindex="-1" style="display:none;"></audio>
 <script>
 // ======= 歌曲与歌词数据/页面缓存 =======
+// 结构完全不变
 const songData = [
   {
     title:"回忆",
@@ -317,6 +375,7 @@ const songData = [
     duration:"3:02",
     tags:["氛围感","抒情","伤感"],
     albumArt:"cover.jpg",
+    artist:"H",
     lyric:
 `[00:00.00]回忆
  [00:16.57]过往的回忆
@@ -359,12 +418,7 @@ const songData = [
 
 // ====== 全局状态 ======
 let currentIdx = 0, lyricEntries=[], lastActiveLine=-1, lastModalOpenIdx = null;
-let playerCache = {
-  idx: 0,
-  time: 0,
-  isPlaying: false,
-  volume: 0.8
-};
+let playerCache = {idx: 0,time: 0,isPlaying: false,volume: 0.8};
 
 const audio = document.getElementById('audio-player');
 const gPlay = document.getElementById('g-play'), gPrev = document.getElementById('g-prev'), gNext = document.getElementById('g-next');
@@ -384,6 +438,12 @@ const gotoPlayerBtn = document.getElementById('goto-player-btn');
 const albumArtImg = document.getElementById('album-art-img');
 const detailModalBg = document.getElementById('detail-modal-bg');
 
+const playerModalTitle = document.getElementById('player-modal-title');
+const playerModalArtist = document.getElementById('player-modal-artist');
+const rotatingAlbumArt = document.getElementById('rotating-album-art');
+const playerModalOuter = document.getElementById('player-modal-outer-container');
+
+// --- 业务功能代码全部不变 ---
 function getAllTags(list){const set=new Set();list.forEach(s=>s.tags?.forEach(t=>set.add(t)));return Array.from(set);}
 function idxOfSong(song){return songData.findIndex(s=>s.title===song.title);}
 function renderSongCards(list, container, filterTag){
@@ -393,9 +453,7 @@ function renderSongCards(list, container, filterTag){
       const li=document.createElement('li');
       li.className="song-card";li.tabIndex=0;
       li.innerHTML=`<span class="song-title">${s.title}</span>${(s.tags||[]).map(t=>`<span class="song-tags">${t}</span>`).join('')}`;
-      li.onclick=()=>{
-        openModal(idxOfSong(s));
-      }
+      li.onclick=()=>{openModal(idxOfSong(s));}
       li.onkeydown=e=>{ if(e.key==="Enter") openModal(idxOfSong(s)); }
       container.appendChild(li);
     });
@@ -423,15 +481,10 @@ renderFilterBar(genreTags,document.getElementById('genreFilterBar'),t=>{renderSo
 renderSongCards(songData,worksList);renderSongCards(songData,genresList);
 
 function persistPlayerCache() {
-  try{
-    sessionStorage.setItem('playerCache',JSON.stringify(playerCache));
-  }catch(e){}
+  try{sessionStorage.setItem('playerCache',JSON.stringify(playerCache));}catch(e){}
 }
 function retrievePlayerCache() {
-  try{
-    const v = sessionStorage.getItem('playerCache');
-    if(v) Object.assign(playerCache,JSON.parse(v));
-  }catch(e){}
+  try{const v = sessionStorage.getItem('playerCache'); if(v) Object.assign(playerCache,JSON.parse(v));}catch(e){}
 }
 retrievePlayerCache();
 
@@ -465,36 +518,19 @@ function parseLyric(lrc){
   result.sort((a,b)=>a.time-b.time);
   return result;
 }
-// 歌词动态滚动: 居中高亮、全屏/弹窗自适应
 function renderLyricBox(text, anchorTime) {
   lyricBox.innerHTML="";
-  let lyrics = parseLyric(text);
-  lyricEntries = lyrics.map((line,idx)=>{
-    let el = document.createElement('div');
-    el.className = "lyric-line";
-    el.textContent = line.text||'';
-    // 强制让每句歌词撑开高度，防止卡死
-    el.style.minHeight = lyricBox.classList.contains("fullscreen") ? "2.4em" : "2.1em";
+  lyricEntries=parseLyric(text).map((line,idx)=>{
+    let el=document.createElement('div');
+    el.className="lyric-line";
+    el.textContent=line.text||'';
     lyricBox.appendChild(el);
     return {...line,dom:el};
   });
   lastActiveLine=-1;
-  syncLyric(anchorTime??(audio.currentTime||0), true, true);
+  syncLyric(anchorTime??(audio.currentTime||0), true);
 }
-function scrollLyricToCenter(idx, smooth=true) {
-  if(!lyricEntries[idx] || !lyricBox) return;
-  const container = lyricBox;
-  const lines = Array.from(container.children);
-  const target = lyricEntries[idx].dom;
-  // 求目标行居中于lyricBox视口
-  const totalHeight = container.scrollHeight;
-  const boxHeight = container.clientHeight;
-  let offsetTop = target.offsetTop + target.offsetHeight/2 - boxHeight/2;
-  // 边界处理
-  offsetTop = Math.max(0, Math.min(offsetTop, totalHeight - boxHeight));
-  container.scrollTo({top:offsetTop, behavior: smooth ? "smooth" : "auto"});
-}
-function syncLyric(currentTime, forceFirst, forceCenter) {
+function syncLyric(currentTime, forceFirst){
   if(!lyricEntries.length)return;
   let idx=0;
   for(let i=0;i<lyricEntries.length;i++){
@@ -505,11 +541,12 @@ function syncLyric(currentTime, forceFirst, forceCenter) {
     if(lastActiveLine>=0)lyricEntries[lastActiveLine].dom.classList.remove('active');
     if(idx>=0)lyricEntries[idx].dom.classList.add('active');
     lastActiveLine=idx;
-    // 歌词始终视野垂直居中（无论全屏还是弹窗）
-    scrollLyricToCenter(idx,true);
+    let box=lyricBox, act=lyricEntries[idx].dom;
+    if(box&&act){
+      let scrollTop=act.offsetTop-box.offsetHeight/2+act.offsetHeight/2;
+      box.scrollTo({top:scrollTop,behavior:'smooth'});
+    }
   }
-  // 打开播放页时强制让歌词居中
-  if(forceCenter) scrollLyricToCenter(idx,false);
 }
 
 function updatePlayerProgressBar(){
@@ -527,6 +564,7 @@ function updateModalProgressBar(){
   modalCur.textContent=formatTime(audio.currentTime);
 }
 
+// =================== MODAL: 新UI专辑封面/歌名/歌词分列 ===================
 function playSong(idx, autoPlay, restoreState) {
   currentIdx=idx;
   const song=songData[idx];
@@ -537,8 +575,29 @@ function playSong(idx, autoPlay, restoreState) {
   gDur.textContent=song.duration;
   detailTitle.textContent=song.title;
   albumArtImg.src = song.albumArt || "cover.jpg";
+  if (rotatingAlbumArt) rotatingAlbumArt.src = song.albumArt || "cover.jpg";
   renderLyricBox(song.lyric, restoreState?.time||0);
   modalDur.textContent=song.duration;
+
+  // 新侧边旋转专辑封面和歌名歌手
+  if(modalContent.classList.contains('fullscreen')) {
+    if(rotatingAlbumArt){
+      rotatingAlbumArt.src = song.albumArt || "cover.jpg";
+      rotatingAlbumArt.style.display = "block";
+    }
+    if(playerModalTitle) {
+      playerModalTitle.textContent = song.title || '';
+      playerModalTitle.style.display = "block";
+    }
+    if(playerModalArtist) {
+      playerModalArtist.textContent = song.artist || '';
+      playerModalArtist.style.display = song.artist ? "block":"none";
+    }
+  } else {
+    if(rotatingAlbumArt) rotatingAlbumArt.style.display = "none";
+    if(playerModalTitle) playerModalTitle.style.display = "none";
+    if(playerModalArtist) playerModalArtist.style.display = "none";
+  }
 
   if(detailModalBg){
     detailModalBg.style.backgroundImage = song.albumArt
@@ -554,7 +613,7 @@ function playSong(idx, autoPlay, restoreState) {
     updatePlayerProgressBar();
     updateModalProgressBar();
     if(restoreState.isPlaying) audio.play(); else audio.pause();
-    setTimeout(() => { syncLyric(audio.currentTime, false,true); }, 40);
+    setTimeout(() => { syncLyric(audio.currentTime, false); }, 40);
   } else if(autoPlay) {
     audio.play();
   }
@@ -576,14 +635,13 @@ function openModal(idx){
     modal.focus();
     modalContent.classList.add('fullscreen');
     modalClose.style.display='block';
+    if(rotatingAlbumArt) rotatingAlbumArt.style.display = 'block';
+    if(playerModalTitle) playerModalTitle.style.display = 'block';
     if(detailModalBg){
       detailModalBg.style.opacity='.38';
     }
-    // 全屏时确保歌词box安全区及居中
-    lyricBox.classList.add('fullscreen');
-    setTimeout(()=>{ scrollLyricToCenter(lastActiveLine||0,false); },20);
   },0);
-  syncLyric(audio.currentTime,false,true);
+  syncLyric(audio.currentTime,false);
   updateGotoPlayerBtn();
 }
 function closeModal(){
@@ -592,14 +650,16 @@ function closeModal(){
   modalClose.style.display='none';
   if(detailModalBg)
     detailModalBg.style.opacity='0';
-  // 关闭后清理全屏class，防止歌词padding紊乱
-  lyricBox.classList.remove('fullscreen');
+  if(rotatingAlbumArt) rotatingAlbumArt.style.display = 'none';
+  if(playerModalTitle) playerModalTitle.style.display = 'none';
+  if(playerModalArtist) playerModalArtist.style.display = 'none';
   switchPage('works');
   updateGotoPlayerBtn();
 }
 modalClose.onclick=closeModal;
 modal.onclick=e=>{if(e.target===modal)closeModal();}
 document.addEventListener('keydown',e=>{
+  // 保证关闭按钮可被快捷键激活
   if(modal.classList.contains('active') && e.key==='Escape') closeModal();
 });
 modalPlay.onclick=()=>{ if(audio.paused){audio.play();}else{audio.pause();} }
@@ -634,12 +694,12 @@ audio.addEventListener('loadedmetadata',function(){
 audio.addEventListener('timeupdate',function(){
   updatePlayerProgressBar();
   updateModalProgressBar();
-  syncLyric(audio.currentTime, false, false);
+  syncLyric(audio.currentTime);
   playerCache.time = audio.currentTime;
   persistPlayerCache();
 });
 audio.addEventListener('seeked',function(){
-  syncLyric(audio.currentTime,true,true);
+  syncLyric(audio.currentTime,true);
   updatePlayerProgressBar();
   updateModalProgressBar();
   playerCache.time = audio.currentTime;
@@ -665,7 +725,7 @@ function setProgressTo(xClient){
   audio.currentTime = pct*(audio.duration||1);
   updatePlayerProgressBar();
   updateModalProgressBar();
-  syncLyric(audio.currentTime,true,true);
+  syncLyric(audio.currentTime,true);
 }
 gProgress.addEventListener('mousedown',function(e){
   isDragging=true;
@@ -703,7 +763,7 @@ function setModalProgressTo(xClient){
   audio.currentTime = pct*(audio.duration||1);
   updateModalProgressBar();
   updatePlayerProgressBar();
-  syncLyric(audio.currentTime,true,true);
+  syncLyric(audio.currentTime,true);
 }
 modalProgress.addEventListener('mousedown',function(e){
   isModalDragging=true;
@@ -761,7 +821,7 @@ document.querySelectorAll('.nav-link').forEach(btn=>{
   }
 });
 
-
+// --------- 初始化 --------
 (function(){
   switchPage("home");
   retrievePlayerCache();
@@ -769,6 +829,5 @@ document.querySelectorAll('.nav-link').forEach(btn=>{
   updateGotoPlayerBtn();
 })();
 </script>
-<audio id="audioPlayer" src="music/song1.mp3">
 </body>
 </html>
